@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shader-workshop"
+version = "0.1.0"
+description = "A local shader development environment"
+authors = [{ name = "bµg", email = "u@pkh.me" }]
+requires-python = ">=3.11"
+dependencies = [
+    "watchdog",
+    "aiohttp",
+    "asyncio",
+]
+keywords = ["shaders", "glsl", "webgl"]
+
+[project.urls]
+Repository = "https://github.com/ubitux/ShaderWorkshop"
+Issues = "https://github.com/ubitux/ShaderWorkshop/issues"
+Changelog = "https://github.com/ubitux/ShaderWorkshop/blob/main/CHANGELOG.md"
+
+[project.scripts]
+shader-workshop = "shader_workshop.server:main"
+
+[tool.setuptools]
+packages = ["shader_workshop"]
+
+[tool.setuptools.package-data]
+"shader_workshop" = ["www/*", "frag-examples/*.frag"]

@@ -1,0 +1,41 @@
+body {
+  color: #dddddd;
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  display: flex;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+nav {
+  min-width: 200px;
+  background: #222;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+main {
+  flex: 1;
+  background: #333;
+  padding: 1rem;
+}
+
+a { color: #ff8000; text-decoration: underline; }
+a:hover { background-color: #ff8000; color: white; }
+a.selected { font-weight: bold; color: white; text-decoration: none; }
+
+canvas {
+  display: block;
+  margin: 0px auto 0px auto;
+}
+
+div#error {
+  color: #ff0000;
+  margin: 10px;
+}
+
+ul#files {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
