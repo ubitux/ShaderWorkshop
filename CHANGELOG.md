@@ -9,4 +9,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 First version.
 
-[0.1.0]: https://github.com/ubitux/ShaderWorkshop/releases/tag/v0.0.1
+[0.1.0]: https://github.com/ubitux/ShaderWorkshop/releases/tag/v0.1.0
