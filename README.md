@@ -4,6 +4,14 @@ This tool is a local HTTP/WebSocket server monitoring the specified shader
 fragment directory. It allows live coding fragment shaders with your preferred
 code editor, and having them rendered in your browser through WebGL2.
 
+## Install
+
+```sh
+pipx install shader-workshop
+```
+
+`pip` can also be used.
+
 ## Usage
 
 ```
