@@ -52,7 +52,8 @@ class CanvasShader {
       #endif
       out vec4 out_color;
       uniform float time;
-      uniform vec2 resolution;` + fsUser;
+      uniform vec2 resolution;
+    ` + fsUser;
 
     const gl = this.gl;
     const vs = this.compileShader(vsSrc, gl.VERTEX_SHADER);
