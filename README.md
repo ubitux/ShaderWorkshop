@@ -20,6 +20,9 @@ shader-workshop /path/to/fragment/shaders
 
 If unspecified, `shader-workshop` will use the examples directory.
 
+All the `.frag` files in that directory will be tracked and accessible through
+the web interface.
+
 ## Fragment inputs and outputs
 
 Every fragment gets the following uniforms as input:
