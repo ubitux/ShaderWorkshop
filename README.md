@@ -33,3 +33,11 @@ Every fragment gets the following uniforms as input:
 They must write on the `vec4 out_color` output to produce a color.
 
 The compatibility is currently set to `300 es`.
+
+## Includes
+
+It is possible to include `.glsl` files using an `#include` directive:
+`#include name` (no quote nor explicit `.glsl`). Recursive includes (`.glsl`
+including `.glsl`) are supported, as well as including multiple times the same
+file (through recursion or not). Their changes are also monitored by the file
+watcher.

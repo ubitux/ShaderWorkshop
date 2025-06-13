@@ -1,5 +1,6 @@
 import asyncio
 import json
+import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -46,6 +47,28 @@ class EventBroadcaster:
                 await dst_queue.put(event)
 
 
+def _extract_inc(line: str) -> str | None:
+    m = re.match(r"\s*#include\s*(?P<inc>\S+)", line)
+    if not m:
+        return None
+    inc = m.group("inc")
+    if "/" in inc:
+        return None
+    return inc + ".glsl"
+
+
+def _track_refs(path: Path) -> set[str]:
+    ret = set()
+    with open(path) as f:
+        for line in f:
+            inc = _extract_inc(line)
+            if not inc:
+                continue
+            ret.add(inc)
+            ret |= _track_refs(path.parent / inc)
+    return ret
+
+
 @dataclass
 class State:
     """One websocket user context state"""
@@ -55,17 +78,29 @@ class State:
 
     @classmethod
     def new(cls) -> Self:
-        return cls(frags=[], selected=None)
+        ret = cls(frags=[], selected=None)
+        ret.update_reftree()
+        return ret
+
+    def update_reftree(self):
+        self.reftree = set()
+        if self.selected is None:
+            return
+        self.reftree = _track_refs(_SHADER_DIR / self.selected)
+        self.reftree.add(self.selected)
+        print(f"{self.selected} -> {self.reftree}")
 
     def select(self, id: str):
         if id not in self.frags:
             return
         self.selected = id
+        self.update_reftree()
 
     async def refresh(self, ws: web.WebSocketResponse):
         self.frags = sorted(f.name for f in _SHADER_DIR.glob("*.frag"))
         if self.selected not in self.frags:
             self.selected = None
+            self.update_reftree()
         await self._send_list(ws)
 
     async def _send_list(self, ws: web.WebSocketResponse):
@@ -109,8 +144,9 @@ async def _ws_handler(request):
             if msg.is_directory:
                 # print(f"directory {msg.src_path} changed")
                 await state.refresh(ws)
-            elif Path(str(msg.src_path)).name == state.selected:
+            elif Path(str(msg.src_path)).name in state.reftree:
                 # print(f"change detected in {state.selected}")
+                state.update_reftree()
                 await state.send_reload(ws)
 
     # Process both sources in parallel
@@ -125,13 +161,32 @@ async def _ws_handler(request):
     return ws
 
 
+def _read_shader(path: Path, included: set | None = None) -> str:
+    content = []
+    if included is None:
+        included = set()
+    with open(path) as f:
+        for line in f:
+            inc = _extract_inc(line)
+            if not inc:
+                content.append(line)
+                continue
+            if inc in included:
+                continue
+            included.add(inc)
+            inc_content = _read_shader(path.parent / inc, included)
+            content.append(inc_content)
+    return "".join(content)
+
+
 async def _index(_):
     return web.FileResponse(_STATIC_DIR / "index.html")
 
 
 async def _frag(request):
     fname = request.match_info["name"]
-    return web.FileResponse(_SHADER_DIR / f"{fname}.frag")
+    content = _read_shader(_SHADER_DIR / f"{fname}.frag")
+    return web.Response(text=content)
 
 
 async def _init_app():
