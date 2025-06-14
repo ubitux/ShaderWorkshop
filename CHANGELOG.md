@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Support for `#include`
 
+### Changed
+- `shader-workshop` program has been renamed to `sw-server`
+
 ## [0.2.0] - 2025-06-11
 
 ### Added

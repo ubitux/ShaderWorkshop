@@ -22,7 +22,7 @@ Issues = "https://github.com/ubitux/ShaderWorkshop/issues"
 Changelog = "https://github.com/ubitux/ShaderWorkshop/blob/main/CHANGELOG.md"
 
 [project.scripts]
-shader-workshop = "shader_workshop.server:main"
+sw-server = "shader_workshop.server:main"
 
 [tool.setuptools]
 packages = ["shader_workshop"]
