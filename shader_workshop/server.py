@@ -1,16 +1,16 @@
 import asyncio
 import json
-import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from textwrap import dedent
 from typing import Self
 
 from aiohttp import WSMsgType, web
 from watchdog.events import (DirModifiedEvent, FileModifiedEvent,
                              FileSystemEventHandler)
 from watchdog.observers import Observer
+
+from .frag import extract_inc, read_shader
 
 _STATIC_DIR = Path(__file__).resolve().parent / "www"
 _EXAMPLES_DIR = Path(__file__).resolve().parent / "frag-examples"
@@ -48,21 +48,11 @@ class EventBroadcaster:
                 await dst_queue.put(event)
 
 
-def _extract_inc(line: str) -> str | None:
-    m = re.match(r"\s*#include\s*(?P<inc>\S+)", line)
-    if not m:
-        return None
-    inc = m.group("inc")
-    if "/" in inc:
-        return None
-    return inc + ".glsl"
-
-
 def _track_refs(path: Path) -> set[str]:
     ret = set()
     with open(path) as f:
         for line in f:
-            inc = _extract_inc(line)
+            inc = extract_inc(line)
             if not inc:
                 continue
             ret.add(inc)
@@ -162,48 +152,13 @@ async def _ws_handler(request):
     return ws
 
 
-def _read_shader(path: Path, included: set | None = None) -> str:
-    content = []
-    if included is None:
-        included = set()
-    with open(path) as f:
-        for line in f:
-            inc = _extract_inc(line)
-            if not inc:
-                content.append(line)
-                continue
-            if inc in included:
-                continue
-            included.add(inc)
-            inc_content = _read_shader(path.parent / inc, included)
-            content.append(inc_content)
-    return "".join(content)
-
-
 async def _index(_):
     return web.FileResponse(_STATIC_DIR / "index.html")
 
 
-_FRAG_HEADER = dedent(
-    """\
-    #version 300 es
-    #if GL_FRAGMENT_PRECISION_HIGH
-    precision highp float;
-    precision highp int;
-    #else
-    precision mediump float;
-    precision mediump int;
-    #endif
-    out vec4 out_color;
-    uniform float time;
-    uniform vec2 resolution;
-    """
-)
-
-
 async def _frag(request):
     fname = request.match_info["name"]
-    content = _FRAG_HEADER + _read_shader(_SHADER_DIR / f"{fname}.frag")
+    content = read_shader(_SHADER_DIR / f"{fname}.frag")
     return web.Response(text=content)
 
 
