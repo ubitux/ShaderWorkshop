@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Support for `#include`
+- `sw-frag` tool to get the complete combined fragment shader
 
 ### Changed
 - `shader-workshop` program has been renamed to `sw-server`

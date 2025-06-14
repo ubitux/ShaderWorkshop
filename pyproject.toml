@@ -23,6 +23,7 @@ Changelog = "https://github.com/ubitux/ShaderWorkshop/blob/main/CHANGELOG.md"
 
 [project.scripts]
 sw-server = "shader_workshop.server:main"
+sw-frag = "shader_workshop.tool:main_frag"
 
 [tool.setuptools]
 packages = ["shader_workshop"]
