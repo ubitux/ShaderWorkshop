@@ -41,19 +41,7 @@ class CanvasShader {
           gl_Position = vec4(pos[gl_VertexID], 0.0, 1.0);
       }`;
 
-    const fsUser = await fetch(frag, {cache: 'no-store'}).then(r => r.text());
-    const fsSrc = `#version 300 es
-      #if GL_FRAGMENT_PRECISION_HIGH
-      precision highp float;
-      precision highp int;
-      #else
-      precision mediump float;
-      precision mediump int;
-      #endif
-      out vec4 out_color;
-      uniform float time;
-      uniform vec2 resolution;
-    ` + fsUser;
+    const fsSrc = await fetch(frag, {cache: 'no-store'}).then(r => r.text());
 
     const gl = this.gl;
     const vs = this.compileShader(vsSrc, gl.VERTEX_SHADER);

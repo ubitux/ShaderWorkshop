@@ -4,6 +4,7 @@ import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from textwrap import dedent
 from typing import Self
 
 from aiohttp import WSMsgType, web
@@ -183,9 +184,26 @@ async def _index(_):
     return web.FileResponse(_STATIC_DIR / "index.html")
 
 
+_FRAG_HEADER = dedent(
+    """\
+    #version 300 es
+    #if GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+    precision highp int;
+    #else
+    precision mediump float;
+    precision mediump int;
+    #endif
+    out vec4 out_color;
+    uniform float time;
+    uniform vec2 resolution;
+    """
+)
+
+
 async def _frag(request):
     fname = request.match_info["name"]
-    content = _read_shader(_SHADER_DIR / f"{fname}.frag")
+    content = _FRAG_HEADER + _read_shader(_SHADER_DIR / f"{fname}.frag")
     return web.Response(text=content)
 
 
