@@ -6,6 +6,15 @@ code editor, and having them rendered in your browser through WebGL2.
 
 ![screenshot](.screenshot.png)
 
+## Features
+
+- Hot reload
+- `#include` directive
+- Play/Pause/Reset time
+- Screenshot
+- Resolution and aspect ratio controls
+- Lightweight, no web dependencies
+
 ## Install
 
 ```sh
