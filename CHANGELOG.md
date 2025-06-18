@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resolution and aspect ratio controls
 - Display fragment shader with line numbers on error
 
+### Fixed
+- A few race conditions while loading a new fragment
+
 ### Changed
 - `shader-workshop` program has been renamed to `sw-server`
 
