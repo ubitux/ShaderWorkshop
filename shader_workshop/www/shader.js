@@ -36,6 +36,8 @@ class CanvasShader {
   }
 
   async loadFragment(frag) {
+    const gl = this.gl;
+
     if (this.animationFrame !== null) {
       cancelAnimationFrame(this.animationFrame);
       this.animationFrame = null;
@@ -53,7 +55,6 @@ class CanvasShader {
 
     const fsSrc = await fetch(frag, {cache: 'no-store'}).then(r => r.text());
 
-    const gl = this.gl;
     const vs = this.compileShader(vsSrc, gl.VERTEX_SHADER);
     const fs = this.compileShader(fsSrc, gl.FRAGMENT_SHADER);
 
