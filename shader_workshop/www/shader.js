@@ -172,6 +172,16 @@ function updateCanvasSize() {
   canvasShader.canvas.height = h;
 }
 
+document.getElementById("zoom").oninput = function() {
+  const c = canvasShader.canvas;
+  const z = parseFloat(this.value);
+  c.style.transform = `scale(${z})`;
+  c.style.width = `${c.width/z}px`;
+  c.style.height = `${c.height/z}px`;
+  console.log(c.style.transform, c.style.width, c.style.height, c.width, c.height);
+  c.style.imageRendering = "pixelated";
+}
+
 function renderFileList() {
   const cur = getCurFrag();
   files.textContent = "";
