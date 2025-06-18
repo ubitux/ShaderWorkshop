@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `sw-frag` tool to get the complete combined fragment shader
 - Play/Pause/Reset controls
 - Canvas screenshot
+- Resolution and aspect ratio controls
 
 ### Changed
 - `shader-workshop` program has been renamed to `sw-server`

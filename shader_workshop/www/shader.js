@@ -129,6 +129,8 @@ const files = document.getElementById("files");
 const playPause = document.getElementById("playpause");
 const resetBtn = document.getElementById("reset");
 const screenshotBtn = document.getElementById("screenshot");
+const resSelect = document.getElementById("res");
+const aspectSelect = document.getElementById("aspect");
 const errorBlock = document.getElementById("error");
 
 var fragList = [];
@@ -152,6 +154,16 @@ function togglePause() { setPause(!paused); }
 
 function screenshot() { action = Action.Screenshot; }
 function reset() { action = Action.ResetTime; }
+
+function updateCanvasSize() {
+  const aArray = aspectSelect.value.split(":", 2);
+  const a = parseInt(aArray[0]) / parseInt(aArray[1]);
+  const h = parseInt(resSelect.value);
+  const w = Math.round(h * a);
+  console.log(`New resolution: ${w}x${h}`);
+  canvasShader.canvas.width = w;
+  canvasShader.canvas.height = h;
+}
 
 function renderFileList() {
   const cur = getCurFrag();
@@ -182,9 +194,12 @@ function loadFromHash() {
 }
 
 setPause(false);
+updateCanvasSize();
 
 resetBtn.onclick = reset;
 screenshotBtn.onclick = screenshot;
+resSelect.onchange = updateCanvasSize;
+aspectSelect.onchange = updateCanvasSize;
 playPause.onclick = togglePause;
 
 socket.onopen = loadFromHash;       // at page load
