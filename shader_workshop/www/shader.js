@@ -13,14 +13,25 @@ class CanvasShader {
       throw new Error("No WebGL2 context available");
   }
 
+  static addLineNumbers(input) {
+    const lines = input.split("\n");
+    const pad = String(lines.length).length;
+    return lines.map((line, index) => {
+      const n = String(index + 1).padStart(pad, "0");
+      return `${n} ${line}`;
+    }).join("\n");
+  }
 
   compileShader(source, type) {
     const gl = this.gl;
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
-      throw new Error(gl.getShaderInfoLog(shader));
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      let err = gl.getShaderInfoLog(shader);
+      err += "\n" + CanvasShader.addLineNumbers(source);
+      throw new Error(err);
+    }
     return shader;
   }
 
