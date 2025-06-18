@@ -29,7 +29,7 @@ canvas {
   margin: 0px auto 0px auto;
 }
 
-div#error {
+pre#error {
   color: #ff0000;
   margin: 10px;
 }
