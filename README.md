@@ -4,6 +4,8 @@ This tool is a local HTTP/WebSocket server monitoring the specified shader
 fragment directory. It allows live coding fragment shaders with your preferred
 code editor, and having them rendered in your browser through WebGL2.
 
+![screenshot](.screenshot.png)
+
 ## Install
 
 ```sh
