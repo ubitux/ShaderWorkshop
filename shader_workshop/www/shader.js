@@ -121,5 +121,5 @@ function loadFromHash() {
   }
 }
 
-socket.addEventListener("open", loadFromHash);         // at page load
-window.addEventListener("hashchange", loadFromHash);   // on hash change
+socket.onopen = loadFromHash;       // at page load
+window.onhashchange = loadFromHash; // on hash change
