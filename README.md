@@ -15,6 +15,7 @@ code editor, and having them rendered in your browser through WebGL2.
 - Play/Pause/Reset time
 - Screenshot
 - Resolution and aspect ratio controls
+- Low resolution rendering
 - Lightweight, no web dependencies
 
 ## Install

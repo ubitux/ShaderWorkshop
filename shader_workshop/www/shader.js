@@ -9,6 +9,7 @@ class CanvasShader {
     if (!this.gl)
       throw new Error("No WebGL2 context available");
 
+    this.scale = 1.0;
     this.mouseX = canvas.width / 2.0;
     this.mouseY = canvas.height / 2.0;
     // grab at document level to not miss events near the border of the canvas
@@ -117,7 +118,7 @@ class CanvasShader {
       gl.useProgram(prog);
       gl.uniform2f(resolutionLoc, canvas.width, canvas.height);
       gl.uniform1f(timeLoc, t);
-      gl.uniform2f(mouseLoc, this.mouseX, this.mouseY);
+      gl.uniform2f(mouseLoc, this.mouseX*this.scale, this.mouseY*this.scale);
 
       for (const control of controls) {
         const info_ctl = control_info[control.name];
@@ -199,11 +200,25 @@ function updateCanvasSize() {
   const a = parseInt(aArray[0]) / parseInt(aArray[1]);
   const h = parseInt(resSelect.value);
   const w = Math.round(h * a);
-  console.log(`New resolution: ${w}x${h}`);
-  canvas.width = w;
-  canvas.height = h;
+
+  if (lowres.value == "1") {
+    canvasShader.scale = 1.0;
+    canvas.style.imageRendering = "auto";
+    resInfo.textContent = "";
+  } else {
+    canvasShader.scale = 1.0 / parseInt(lowres.value);
+    canvas.style.imageRendering = "pixelated";
+    resInfo.textContent = ` (x${lowres.value})`;
+  }
+
+  const s = canvasShader.scale;
+  canvas.width = w * s;
+  canvas.height = h * s;
+  canvas.style.width = `${w}px`;
+  canvas.style.height = `${h}px`;
   canvasShader.mouseX = w / 2.0;
   canvasShader.mouseY = h / 2.0;
+  resInfo.textContent = `R:${canvas.width}x${canvas.height}` + resInfo.textContent;
 }
 
 function renderFileList() {
@@ -325,6 +340,7 @@ resetBtn.onclick = reset;
 screenshotBtn.onclick = screenshot;
 resSelect.onchange = updateCanvasSize;
 aspectSelect.onchange = updateCanvasSize;
+lowres.oninput = updateCanvasSize;
 playPause.onclick = togglePause;
 
 socket.onopen = loadFromHash;       // at page load

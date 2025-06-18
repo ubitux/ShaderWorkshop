@@ -21,6 +21,7 @@
         <button id="playPause" title="Play/Pause">&#x23F5;</button>
         <label id="infoLbl"></label>
         <label id="fpsInfo"></label>
+        <label id="resInfo"></label>
       </p>
       <p>
         <select id="resSelect">
@@ -37,6 +38,9 @@
           <option value="1:1">Square 1:1</option>
           <option value="9:16">Portrait 9:16</option>
         </select>
+        <label id="lowresLbl">Low res:
+          <input type="range" min="1" max="32" value="1" id="lowres">
+        </label>
       </p>
     </div>
     <pre id="errorBlock"></pre>

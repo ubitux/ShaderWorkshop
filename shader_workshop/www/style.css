@@ -78,3 +78,5 @@ div#controls {
 #fragControls input {
   justify-self: left;
 }
+
+label#lowresLbl { display: inline-flex; align-items: center; }
