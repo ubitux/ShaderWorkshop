@@ -196,7 +196,12 @@ function getCurFrag() {
   return window.location.hash.substring(1); // drop '#';
 }
 
+let loading = false;
+
 async function loadFromHash() {
+  if (loading)
+    return;
+  loading = true;
   const hash = getCurFrag();
   if (hash) {
     errorBlock.textContent = "";
@@ -208,6 +213,7 @@ async function loadFromHash() {
     socket.send(JSON.stringify({pick: hash})); // notify backend for file monitoring
     renderFileList(); // to update currently selected one
   }
+  loading = false;
 }
 
 setPause(false);
