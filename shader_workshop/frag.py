@@ -45,6 +45,7 @@ def _read_shader_rec(path: Path, included: set) -> str:
     return "".join(content)
 
 
-def read_shader(path: Path) -> str:
+def read_shader(path: Path, add_header: bool = True) -> str:
     included = set()
-    return _FRAG_HEADER + _read_shader_rec(path, included)
+    header = _FRAG_HEADER if add_header else ""
+    return header + _read_shader_rec(path, included)

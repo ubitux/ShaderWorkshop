@@ -1,11 +1,22 @@
-import sys
+import argparse
 from pathlib import Path
 
 from .frag import read_shader
 
 
 def main_frag():
-    if len(sys.argv) != 2 and sys.argv[1].endswith("frag"):
-        print("Usage: {sys.argv[0]} /path/to/file.frag", file=sys.stderr)
-        sys.exit(1)
-    print(read_shader(Path(sys.argv[1])))
+
+    def frag(filename: str) -> Path:
+        if not filename.endswith(".frag"):
+            raise argparse.ArgumentTypeError("fragment must have a .frag extension")
+        return Path(filename)
+
+    parser = argparse.ArgumentParser(description="Print the combined shader")
+    parser.add_argument(
+        "--no-header",
+        action="store_true",
+        help="Do not include the header",
+    )
+    parser.add_argument("frag", type=frag, help="path to fragment shader")
+    args = parser.parse_args()
+    print(read_shader(args.frag, not args.no_header).rstrip())
