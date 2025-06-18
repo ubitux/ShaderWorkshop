@@ -197,7 +197,7 @@ async function loadFromHash() {
     try {
       await canvasShader.loadFragment(`/frag/${hash}`);
     } catch (error) {
-      errorBlock.innerText = error;
+      errorBlock.innerText = error.message;
     }
     socket.send(JSON.stringify({pick: hash})); // notify backend for file monitoring
     renderFileList(); // to update currently selected one
