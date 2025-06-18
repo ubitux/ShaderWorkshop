@@ -86,10 +86,10 @@ var fragList = [];
 
 socket.onmessage = function(event) {
   const data = JSON.parse(event.data);
-  if (data["type"] == "list") {
-    fragList = data["frags"];
+  if (data.type == "list") {
+    fragList = data.frags;
     renderFileList();
-  } else if (data["type"] == "reload") {
+  } else if (data.type == "reload") {
     loadFromHash();
   }
 }
