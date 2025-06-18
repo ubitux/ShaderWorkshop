@@ -10,13 +10,9 @@ class CanvasShader {
     canvas.height = canvas.clientHeight;
     this.gl = canvas.getContext("webgl2");
     if (!this.gl)
-      CanvasShader.raiseError("No WebGL2 context available");
+      throw new Error("No WebGL2 context available");
   }
 
-  static raiseError(err) {
-    errorBlock.innerText = err;
-    throw new Error(err);
-  }
 
   compileShader(source, type) {
     const gl = this.gl;
@@ -24,7 +20,7 @@ class CanvasShader {
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
-      CanvasShader.raiseError(gl.getShaderInfoLog(shader));
+      throw new Error(gl.getShaderInfoLog(shader));
     return shader;
   }
 
@@ -55,7 +51,7 @@ class CanvasShader {
     gl.attachShader(prog, fs);
     gl.linkProgram(prog);
     if (!gl.getProgramParameter(prog, gl.LINK_STATUS))
-      CanvasShader.raiseError(gl.getProgramInfoLog(prog));
+      throw new Error(gl.getProgramInfoLog(prog));
     gl.deleteShader(vs);
     gl.deleteShader(fs);
 
@@ -183,11 +179,15 @@ function getCurFrag() {
   return window.location.hash.substring(1); // drop '#';
 }
 
-function loadFromHash() {
+async function loadFromHash() {
   const hash = getCurFrag();
   if (hash) {
     errorBlock.textContent = "";
-    canvasShader.loadFragment(`/frag/${hash}`);
+    try {
+      await canvasShader.loadFragment(`/frag/${hash}`);
+    } catch (error) {
+      errorBlock.innerText = error;
+    }
     socket.send(JSON.stringify({pick: hash})); // notify backend for file monitoring
     renderFileList(); // to update currently selected one
   }
