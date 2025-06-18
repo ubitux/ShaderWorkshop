@@ -63,12 +63,39 @@ class CanvasShader {
     const timeLoc = gl.getUniformLocation(prog, "time");
     const canvas = this.canvas;
 
+    let startTime = null;
+    let lastRefreshInfoTime = -1.0;
+    let pauseTime = 0.0;
+
+    const info = document.getElementById("info");
+
     const render = (time) => {
+      if (action == Action.ResetTime || startTime === null) {
+        action = null;
+        startTime = time;
+        pauseTime = time;
+        lastRefreshInfoTime = -1.0;
+      } else if (action == Action.Pause) {
+        action = null;
+        pauseTime = time;
+      } else if (action == Action.Resume) {
+        action = null;
+        startTime += time - pauseTime;
+      }
+
+      if (paused) time = pauseTime;
+
+      const t = (time - startTime) * 0.001;
+      if (Math.abs(t - lastRefreshInfoTime) > 0.05) {
+        info.textContent = t.toFixed(2);
+        lastRefreshInfoTime = t;
+      }
+
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.useProgram(prog);
       gl.uniform2f(resolutionLoc, canvas.width, canvas.height);
-      gl.uniform1f(timeLoc, time * 0.001);
+      gl.uniform1f(timeLoc, t);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       this.animationFrame = requestAnimationFrame(render);
     };
@@ -77,9 +104,20 @@ class CanvasShader {
   }
 }
 
+let Action = {
+  Pause: 1,
+  Resume: 2,
+  ResetTime: 3,
+};
+let action = null;
+
+let paused; // state
+
 const socket = new WebSocket(`ws://${window.location.host}/ws`);
 const canvasShader = new CanvasShader("shader-canvas");
 const files = document.getElementById("files");
+const playPause = document.getElementById("playpause");
+const resetBtn = document.getElementById("reset");
 const errorBlock = document.getElementById("error");
 
 var fragList = [];
@@ -93,6 +131,15 @@ socket.onmessage = function(event) {
     loadFromHash();
   }
 }
+
+function setPause(state) {
+  paused = state;
+  action = paused ? Action.Pause : Action.Resume;
+  playPause.className = paused ? "" : "pressed";
+}
+function togglePause() { setPause(!paused); }
+
+function reset() { action = Action.ResetTime; }
 
 function renderFileList() {
   const cur = getCurFrag();
@@ -121,6 +168,11 @@ function loadFromHash() {
     renderFileList(); // to update currently selected one
   }
 }
+
+setPause(false);
+
+resetBtn.onclick = reset;
+playPause.onclick = togglePause;
 
 socket.onopen = loadFromHash;       // at page load
 window.onhashchange = loadFromHash; // on hash change

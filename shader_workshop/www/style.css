@@ -39,3 +39,21 @@ ul#files {
   margin: 0;
   padding: 0;
 }
+
+button {
+  background: #555;
+  border: none;
+  color: white;
+  font-size: 1.5em;
+  min-width: 30px;
+  border-radius: 3px;
+}
+
+button.pressed { background: #888; }
+button:hover { background: #aaa; }
+
+div#controls {
+  margin-top: 10px;
+}
+
+#info::before { content: "t:"; }

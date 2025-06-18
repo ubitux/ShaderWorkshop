@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Support for the `#include` directive
 - `sw-frag` tool to get the complete combined fragment shader
+- Play/Pause/Reset controls
 
 ### Changed
 - `shader-workshop` program has been renamed to `sw-server`
