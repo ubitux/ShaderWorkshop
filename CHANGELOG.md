@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Support for `#include`
+- Support for the `#include` directive
 - `sw-frag` tool to get the complete combined fragment shader
 
 ### Changed
