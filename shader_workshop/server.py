@@ -121,7 +121,6 @@ async def _ws_handler(request):
         async for msg in ws:
             if msg.type == WSMsgType.TEXT:
                 payload = json.loads(msg.data)
-                # print(f"<< {payload}")
                 state.select(payload["pick"])
             elif msg.type == WSMsgType.ERROR:
                 print(f"WebSocket error: {ws.exception()}")
@@ -131,12 +130,11 @@ async def _ws_handler(request):
         request.app["broadcaster"].subscribe(fs_events_queue)
         while True:
             msg: DirModifiedEvent | FileModifiedEvent = await fs_events_queue.get()
-            # print(msg)
             if msg.is_directory:
-                # print(f"directory {msg.src_path} changed")
+                print(f"directory {msg.src_path} changed")
                 await state.refresh(ws)
             elif Path(str(msg.src_path)).name in state.reftree:
-                # print(f"change detected in {state.selected}")
+                print(f"change detected in {state.selected}")
                 state.update_reftree()
                 await state.send_reload(ws)
 
