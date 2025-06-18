@@ -39,6 +39,9 @@ class CanvasShader {
     if (this.animationFrame !== null) {
       cancelAnimationFrame(this.animationFrame);
       this.animationFrame = null;
+      const p = this.prog;
+      this.prog = null; // used to notify render loop
+      gl.deleteProgram(p);
     }
 
     // A big triangle cropped by the viewport to fake a quad geometry (because it's faster)
@@ -54,8 +57,6 @@ class CanvasShader {
     const vs = this.compileShader(vsSrc, gl.VERTEX_SHADER);
     const fs = this.compileShader(fsSrc, gl.FRAGMENT_SHADER);
 
-    if (this.prog !== null)
-      gl.deleteProgram(this.prog);
     const prog = gl.createProgram();
     this.prog = prog;
     gl.attachShader(prog, vs);
@@ -88,6 +89,11 @@ class CanvasShader {
       } else if (action == Action.Resume) {
         action = null;
         startTime += time - pauseTime;
+      }
+
+      if (!this.prog) {
+        console.log("render loop canceled");
+        return;
       }
 
       if (paused) time = pauseTime;
