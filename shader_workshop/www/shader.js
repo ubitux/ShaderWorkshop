@@ -78,7 +78,7 @@ class CanvasShader {
 }
 
 const socket = new WebSocket(`ws://${window.location.host}/ws`);
-const canvas = new CanvasShader("shader-canvas");
+const canvasShader = new CanvasShader("shader-canvas");
 const files = document.getElementById("files");
 const errorBlock = document.getElementById("error");
 
@@ -116,7 +116,7 @@ function loadFromHash() {
   const hash = getCurFrag();
   if (hash) {
     errorBlock.textContent = "";
-    canvas.loadFragment(`/frag/${hash}`);
+    canvasShader.loadFragment(`/frag/${hash}`);
     socket.send(JSON.stringify({pick: hash})); // notify backend for file monitoring
     renderFileList(); // to update currently selected one
   }
