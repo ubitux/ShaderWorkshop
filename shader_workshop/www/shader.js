@@ -97,6 +97,15 @@ class CanvasShader {
       gl.uniform2f(resolutionLoc, canvas.width, canvas.height);
       gl.uniform1f(timeLoc, t);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+      if (action == Action.Screenshot) {
+        action = null;
+        const link = document.createElement("a");
+        link.download = "shader.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      }
+
       this.animationFrame = requestAnimationFrame(render);
     };
 
@@ -108,6 +117,7 @@ let Action = {
   Pause: 1,
   Resume: 2,
   ResetTime: 3,
+  Screenshot: 4,
 };
 let action = null;
 
@@ -118,6 +128,7 @@ const canvasShader = new CanvasShader("shader-canvas");
 const files = document.getElementById("files");
 const playPause = document.getElementById("playpause");
 const resetBtn = document.getElementById("reset");
+const screenshotBtn = document.getElementById("screenshot");
 const errorBlock = document.getElementById("error");
 
 var fragList = [];
@@ -139,6 +150,7 @@ function setPause(state) {
 }
 function togglePause() { setPause(!paused); }
 
+function screenshot() { action = Action.Screenshot; }
 function reset() { action = Action.ResetTime; }
 
 function renderFileList() {
@@ -172,6 +184,7 @@ function loadFromHash() {
 setPause(false);
 
 resetBtn.onclick = reset;
+screenshotBtn.onclick = screenshot;
 playPause.onclick = togglePause;
 
 socket.onopen = loadFromHash;       // at page load
