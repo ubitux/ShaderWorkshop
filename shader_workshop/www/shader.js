@@ -11,6 +11,21 @@ class CanvasShader {
     this.gl = canvas.getContext("webgl2");
     if (!this.gl)
       throw new Error("No WebGL2 context available");
+
+    const rect = this.canvas.getBoundingClientRect();
+    // XXX broken
+    this.mouseX = rect.width / 2.0;
+    this.mouseY = rect.height / 2.0;
+    console.log(`init ${this.mouseX},${this.mouseY}`);
+    // grab at document level to not miss events near the border of the canvas
+    document.onmousemove = (e) => this.onMouseMove(e); // XXX prevent other events
+  }
+
+  onMouseMove(e) {
+    const rect = this.canvas.getBoundingClientRect();
+    this.mouseX = Math.min(Math.max(e.clientX - rect.left, 0), rect.width);
+    this.mouseY = Math.min(Math.max(rect.height - (e.clientY - rect.top), 0), rect.height); // Flip Y
+    console.log(this.mouseX, this.mouseY);
   }
 
   static addLineNumbers(input) {
@@ -70,6 +85,7 @@ class CanvasShader {
 
     const resolutionLoc = gl.getUniformLocation(prog, "resolution");
     const timeLoc = gl.getUniformLocation(prog, "time");
+    const mouseLoc = gl.getUniformLocation(prog, "mouse");
     const canvas = this.canvas;
 
     let startTime = null;
@@ -110,6 +126,7 @@ class CanvasShader {
       gl.useProgram(prog);
       gl.uniform2f(resolutionLoc, canvas.width, canvas.height);
       gl.uniform1f(timeLoc, t);
+      gl.uniform2f(mouseLoc, this.mouseX, this.mouseY);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
 
       if (action == Action.Screenshot) {
