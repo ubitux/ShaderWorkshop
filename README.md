@@ -10,6 +10,7 @@ code editor, and having them rendered in your browser through WebGL2.
 
 - Hot reload
 - Live controls for basic uniforms
+- Mouse position
 - `#include` directive
 - Play/Pause/Reset time
 - Screenshot

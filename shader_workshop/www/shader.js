@@ -8,6 +8,17 @@ class CanvasShader {
     this.gl = canvas.getContext("webgl2");
     if (!this.gl)
       throw new Error("No WebGL2 context available");
+
+    this.mouseX = canvas.width / 2.0;
+    this.mouseY = canvas.height / 2.0;
+    // grab at document level to not miss events near the border of the canvas
+    document.onmousemove = (e) => this.onMouseMove(e);
+  }
+
+  onMouseMove(e) {
+    const rect = canvas.getBoundingClientRect();
+    this.mouseX = Math.min(Math.max(e.clientX - rect.left, 0), rect.width);
+    this.mouseY = Math.min(Math.max(rect.height - (e.clientY - rect.top), 0), rect.height); // Flip Y
   }
 
   compileShader(source, type) {
@@ -53,6 +64,7 @@ class CanvasShader {
 
     const resolutionLoc = gl.getUniformLocation(prog, "resolution");
     const timeLoc = gl.getUniformLocation(prog, "time");
+    const mouseLoc = gl.getUniformLocation(prog, "mouse");
 
     var control_info = {};
     for (const control of controls) {
@@ -105,6 +117,7 @@ class CanvasShader {
       gl.useProgram(prog);
       gl.uniform2f(resolutionLoc, canvas.width, canvas.height);
       gl.uniform1f(timeLoc, t);
+      gl.uniform2f(mouseLoc, this.mouseX, this.mouseY);
 
       for (const control of controls) {
         const info_ctl = control_info[control.name];
@@ -189,6 +202,8 @@ function updateCanvasSize() {
   console.log(`New resolution: ${w}x${h}`);
   canvas.width = w;
   canvas.height = h;
+  canvasShader.mouseX = w / 2.0;
+  canvasShader.mouseY = h / 2.0;
 }
 
 function renderFileList() {

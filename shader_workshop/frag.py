@@ -16,6 +16,7 @@ _FRAG_HEADER = dedent(
     out vec4 out_color;
     uniform float time;
     uniform vec2 resolution;
+    uniform vec2 mouse;
     """
 )
 
