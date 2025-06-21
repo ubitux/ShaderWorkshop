@@ -35,7 +35,7 @@ class CanvasShader {
     return shader;
   }
 
-  async loadFragment(frag) {
+  loadFragment(fsSrc) {
     const gl = this.gl;
 
     if (this.animationFrame !== null) {
@@ -52,8 +52,6 @@ class CanvasShader {
       void main() {
           gl_Position = vec4(pos[gl_VertexID], 0.0, 1.0);
       }`;
-
-    const fsSrc = await fetch(frag, {cache: 'no-store'}).then(r => r.text());
 
     const vs = this.compileShader(vsSrc, gl.VERTEX_SHADER);
     const fs = this.compileShader(fsSrc, gl.FRAGMENT_SHADER);
@@ -206,8 +204,9 @@ async function loadFromHash() {
   const hash = getCurFrag();
   if (hash) {
     errorBlock.textContent = "";
+    const fs = await fetch(`/frag/${hash}`, {cache: 'no-store'}).then(r => r.json());
     try {
-      await canvasShader.loadFragment(`/frag/${hash}`);
+      canvasShader.loadFragment(fs);
     } catch (error) {
       errorBlock.innerText = error.message;
     }
