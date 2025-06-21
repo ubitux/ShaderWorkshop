@@ -13,10 +13,10 @@ def main_frag():
 
     parser = argparse.ArgumentParser(description="Print the combined shader")
     parser.add_argument(
-        "--no-header",
+        "--header",
         action="store_true",
-        help="Do not include the header",
+        help="Include the header",
     )
     parser.add_argument("frag", type=frag, help="path to fragment shader")
     args = parser.parse_args()
-    print(read_shader(args.frag, not args.no_header).rstrip())
+    print(read_shader(args.frag, args.header).rstrip())
