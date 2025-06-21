@@ -13,25 +13,13 @@ class CanvasShader {
       throw new Error("No WebGL2 context available");
   }
 
-  static addLineNumbers(input) {
-    const lines = input.split("\n");
-    const pad = String(lines.length).length;
-    return lines.map((line, index) => {
-      const n = String(index + 1).padStart(pad, "0");
-      return `${n} ${line}`;
-    }).join("\n");
-  }
-
   compileShader(source, type) {
     const gl = this.gl;
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      let err = gl.getShaderInfoLog(shader);
-      err += "\n" + CanvasShader.addLineNumbers(source);
-      throw new Error(err);
-    }
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+      throw new Error(gl.getShaderInfoLog(shader));
     return shader;
   }
 
@@ -144,6 +132,7 @@ const screenshotBtn = document.getElementById("screenshot");
 const resSelect = document.getElementById("res");
 const aspectSelect = document.getElementById("aspect");
 const errorBlock = document.getElementById("error");
+const refList = document.getElementById("refList");
 
 var fragList = [];
 
@@ -197,6 +186,22 @@ function getCurFrag() {
 
 let loading = false;
 
+function renderRefList(refs) {
+  if (refs.length < 2) {
+    refList.textContent = "";
+    return;
+  }
+  refList.textContent = "File ID -> filename:";
+  const ol = document.createElement("ol");
+  ol.start = 0;
+  refList.appendChild(ol);
+  for (const ref of refs) {
+    const li = document.createElement("li");
+    li.textContent = ref;
+    ol.appendChild(li);
+  }
+}
+
 async function loadFromHash() {
   if (loading)
     return;
@@ -204,11 +209,13 @@ async function loadFromHash() {
   const hash = getCurFrag();
   if (hash) {
     errorBlock.textContent = "";
+    refList.textContent = "";
     const fs = await fetch(`/frag/${hash}`, {cache: 'no-store'}).then(r => r.json());
     try {
-      canvasShader.loadFragment(fs);
+      canvasShader.loadFragment(fs.content);
     } catch (error) {
       errorBlock.innerText = error.message;
+      renderRefList(fs.refs);
     }
     socket.send(JSON.stringify({pick: hash})); // notify backend for file monitoring
     renderFileList(); // to update currently selected one

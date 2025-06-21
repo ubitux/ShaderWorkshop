@@ -37,6 +37,10 @@ pre#error {
   margin: 10px;
 }
 
+div#refList {
+  margin: 10px;
+}
+
 ul#files {
   list-style-type: none;
   margin: 0;

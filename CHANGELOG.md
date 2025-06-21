@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `sw-frag --no-header` function has been renamed to `--header`
 
+### Changed
+- Error messages do not dump the shader anymore: the error lines in the error
+  messages now correspond to the original line numbers in the fragment and
+  include files.
+
 ## [0.3.0] - 2025-06-19
 
 ### Added

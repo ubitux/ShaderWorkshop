@@ -19,4 +19,5 @@ def main_frag():
     )
     parser.add_argument("frag", type=frag, help="path to fragment shader")
     args = parser.parse_args()
-    print(read_shader(args.frag, args.header).rstrip())
+    fs = read_shader(args.frag, add_header=args.header, set_lines_directives=False)
+    print(fs.content.rstrip())

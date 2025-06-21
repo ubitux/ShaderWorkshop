@@ -156,8 +156,9 @@ async def _index(_):
 
 async def _frag(request):
     fname = request.match_info["name"]
-    content = read_shader(_SHADER_DIR / f"{fname}.frag")
-    return web.Response(text=content)
+    frag = read_shader(_SHADER_DIR / f"{fname}.frag")
+    data = dict(content=frag.content, refs=frag.refs)
+    return web.json_response(data)
 
 
 async def _init_app():
