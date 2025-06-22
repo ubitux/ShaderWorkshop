@@ -41,7 +41,6 @@ float fbm(vec2 p) {
 }
 
 void main() {
-    float w = 2.0/resolution.y; // size of a pixel
     float freq = 1.0/zoom;
 
     vec2 uv = gl_FragCoord.xy / resolution;
