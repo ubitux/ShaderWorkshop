@@ -8,7 +8,7 @@ version = "0.3.0"
 description = "A local shader development environment"
 readme = "README.md"
 authors = [{ name = "bµg", email = "u@pkh.me" }]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
     "watchdog",
     "aiohttp",

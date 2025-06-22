@@ -64,3 +64,11 @@ div#controls {
 }
 
 #infoLbl::before { content: "t:"; }
+
+#fragControls {
+  display: grid;
+  grid-template-columns: auto 1fr 50px; /* label, input, output */
+  column-gap: 1em;
+  align-items: center; /* vertical align */
+  max-width: 400px;
+}

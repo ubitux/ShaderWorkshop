@@ -20,10 +20,48 @@ _FRAG_HEADER = dedent(
 )
 
 
+type Control = ControlI32 | ControlF32 | ControlBool
+
+
+@dataclass
+class ControlI32:
+    name: str
+    val: int = 0
+    min: int = 0
+    max: int = 100
+
+    @property
+    def typ(self) -> str:
+        return "i32"
+
+
+@dataclass
+class ControlF32:
+    name: str
+    val: float = 0.0
+    min: float = 0.0
+    max: float = 1.0
+
+    @property
+    def typ(self) -> str:
+        return "f32"
+
+
+@dataclass
+class ControlBool:
+    name: str
+    val: bool = False
+
+    @property
+    def typ(self) -> str:
+        return "bool"
+
+
 @dataclass
 class Fragment:
     content: str
     refs: list[str]
+    controls: list[Control]
 
 
 def extract_inc(line: str) -> str | None:
@@ -36,17 +74,61 @@ def extract_inc(line: str) -> str | None:
     return inc + ".glsl"
 
 
+_GL_TYPE_TO_CTL_CLS = dict(
+    float=ControlF32,
+    int=ControlI32,
+    bool=ControlBool,
+)
+
+
+def extract_control(line: str) -> Control | None:
+    r = r"\s*uniform\s+(?P<type>float|int|bool)\s+(?P<name>\w+)\s*;(\s*//\s*(?P<com>.*))?\s*$"
+    m = re.match(r, line)
+    if not m:
+        return None
+    typ, name, com = m.group("type", "name", "com")
+    ctl = _GL_TYPE_TO_CTL_CLS[typ](name)
+    if com:
+        for m in re.finditer(r"(?P<key>\w+)\s*:\s*(?P<val>[\d\.]+)", com):
+            k, v = m.group("key", "val")
+            if isinstance(ctl, ControlF32):
+                v = float(v)
+                if k == "min":
+                    ctl.min = v
+                elif k == "max":
+                    ctl.max = v
+                elif k == "def":
+                    ctl.val = v
+            elif isinstance(ctl, ControlI32):
+                v = int(v)
+                if k == "min":
+                    ctl.min = v
+                elif k == "max":
+                    ctl.max = v
+                elif k == "def":
+                    ctl.val = v
+            elif isinstance(ctl, ControlBool):
+                ctl.val = bool(int(v))
+    return ctl
+
+
 def _read_shader_rec(
     path: Path,
     included: dict[str, int],
     ln: bool = True,
     cur_fid: int = 0,
-) -> str:
+) -> tuple[str, list[Control]]:
     content = []
     fid = cur_fid
     included[path.name] = cur_fid
+    controls = []
     with open(path) as f:
         for i, line in enumerate(f, 1):
+            ctl = extract_control(line)
+            if ctl:
+                controls.append(ctl)
+                content.append(line)
+                continue
             inc = extract_inc(line)
             if not inc:
                 content.append(line)
@@ -54,13 +136,14 @@ def _read_shader_rec(
             if inc in included:
                 continue
             fid += 1
-            inc_content = _read_shader_rec(path.parent / inc, included, ln, fid)
+            inc_content, ctls = _read_shader_rec(path.parent / inc, included, ln, fid)
+            controls += ctls
             if ln:
                 content.append(f"#line 1 {fid}\n")
             content.append(inc_content)
             if ln:
                 content.append(f"#line {i+1} {cur_fid}\n")
-    return "".join(content)
+    return "".join(content), controls
 
 
 def read_shader(
@@ -70,7 +153,7 @@ def read_shader(
 ) -> Fragment:
     included = dict()
     header = _FRAG_HEADER if add_header else ""
-    content = _read_shader_rec(path, included, set_lines_directives)
+    content, controls = _read_shader_rec(path, included, set_lines_directives)
     swapped = {v: k for k, v in included.items()}
     refs = [swapped[i] for i in range(len(swapped))]
-    return Fragment(header + content, refs)
+    return Fragment(header + content, refs, controls)

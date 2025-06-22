@@ -20,7 +20,7 @@ class CanvasShader {
     return shader;
   }
 
-  loadFragment(fsSrc) {
+  loadFragment(fsSrc, controls) {
     const gl = this.gl;
 
     if (this.animationFrame !== null) {
@@ -53,6 +53,14 @@ class CanvasShader {
 
     const resolutionLoc = gl.getUniformLocation(prog, "resolution");
     const timeLoc = gl.getUniformLocation(prog, "time");
+
+    var control_info = {};
+    for (const control of controls) {
+      control_info[control.name] = {
+        w: document.getElementById(`ctl_${control.name}`),
+        loc: gl.getUniformLocation(prog, control.name),
+      };
+    }
 
     let startTime = null;
     let lastRefreshInfoTime = -1.0;
@@ -90,6 +98,17 @@ class CanvasShader {
       gl.useProgram(prog);
       gl.uniform2f(resolutionLoc, canvas.width, canvas.height);
       gl.uniform1f(timeLoc, t);
+
+      for (const control of controls) {
+        const info_ctl = control_info[control.name];
+        const w = info_ctl.w;
+        const loc = info_ctl.loc;
+
+        if      (control.type == "bool") gl.uniform1i(loc, w.checked ? 1 : 0);
+        else if (control.type == "f32")  gl.uniform1f(loc, parseFloat(w.value));
+        else if (control.type == "i32")  gl.uniform1i(loc, parseInt(w.value));
+      }
+
       gl.drawArrays(gl.TRIANGLES, 0, 3);
 
       if (action == Action.Screenshot) {
@@ -188,6 +207,53 @@ function renderRefList(refs) {
   }
 }
 
+function renderFragControls(controls) {
+  fragControls.textContent = "";
+  if (controls.length == 0) {
+    fragControls.style.visibility = "hidden";
+    return;
+  }
+
+  for (const control of controls) {
+    const w = document.createElement("input");
+    w.id = `ctl_${control.name}`;
+
+    const label = document.createElement("label");
+    label.htmlFor = w.id;
+    label.textContent = control.name;
+
+    const o = document.createElement("output");
+    o.id = `out_${control.name}`;
+
+    if (["f32", "i32"].includes(control.type)) {
+      w.type = "range";
+      if (control.type == "f32") {
+        w.step = 0.01;
+        w.oninput = function() { o.value = parseFloat(this.value).toFixed(2); }
+      } else {
+        w.step = 1;
+        w.oninput = function() { o.value = this.value; }
+      }
+      w.min = control.min;
+      w.max = control.max;
+      w.value = control.val;
+      w.oninput();
+    } else if (control.type == "bool") {
+      w.type = "checkbox";
+      w.checked = control.val;
+    }
+
+    fragControls.appendChild(label);
+    fragControls.appendChild(w);
+    fragControls.appendChild(o);
+  }
+
+  const legend = document.createElement("legend");
+  legend.textContent = "Live controls";
+  fragControls.appendChild(legend);
+  fragControls.style.visibility = "";
+}
+
 async function loadFromHash() {
   if (loading)
     return;
@@ -197,9 +263,12 @@ async function loadFromHash() {
     errorBlock.textContent = "";
     refList.textContent = "";
     const fs = await fetch(`/frag/${hash}`, {cache: 'no-store'}).then(r => r.json());
+    renderFragControls(fs.controls);
     try {
-      canvasShader.loadFragment(fs.content);
+      canvasShader.loadFragment(fs.content, fs.controls);
     } catch (error) {
+      fragControls.textContent = "";
+      fragControls.style.visibility = "hidden";
       errorBlock.innerText = error.message;
       renderRefList(fs.refs);
     }

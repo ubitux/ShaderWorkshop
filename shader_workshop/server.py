@@ -1,7 +1,7 @@
 import asyncio
 import json
 import sys
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Self
 
@@ -157,7 +157,8 @@ async def _index(_):
 async def _frag(request):
     fname = request.match_info["name"]
     frag = read_shader(_SHADER_DIR / f"{fname}.frag")
-    data = dict(content=frag.content, refs=frag.refs)
+    controls = [asdict(c) | dict(type=c.typ) for c in frag.controls]
+    data = dict(content=frag.content, refs=frag.refs, controls=controls)
     return web.json_response(data)
 
 

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- Uniform live controls for `float`, `int` and `bool`
+
 ### Fixed
 - `sw-frag --no-header` function has been renamed to `--header`
 
@@ -14,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Error messages do not dump the shader anymore: the error lines in the error
   messages now correspond to the original line numbers in the fragment and
   include files.
+- Python minimal requirement is bumped to 3.12
 
 ## [0.3.0] - 2025-06-19
 

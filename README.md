@@ -9,6 +9,7 @@ code editor, and having them rendered in your browser through WebGL2.
 ## Features
 
 - Hot reload
+- Live controls for basic uniforms
 - `#include` directive
 - Play/Pause/Reset time
 - Screenshot
@@ -44,6 +45,20 @@ Every fragment gets the following uniforms as input:
 They must write on the `vec4 out_color` output to produce a color.
 
 The compatibility is currently set to `300 es`.
+
+## Live controls
+
+To expose controls to the web UI, declare a uniform in your fragment shader.
+Optionally, in the comment beside, you can specify the default value and ranges.
+For example:
+
+```glsl
+uniform float angle; // def:0.7 min:0.6 max:0.9
+uniform int steps;   // def:7 min:0 max:10
+uniform bool debug;  // def:1
+```
+
+Currently, only `float`, `int` and `bool` are supported.
 
 ## Includes
 
