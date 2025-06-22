@@ -119,6 +119,8 @@ def _read_shader_rec(
     cur_fid: int = 0,
 ) -> tuple[str, list[Control]]:
     content = []
+    if ln:
+        content.append(f"#line 1 {cur_fid}\n")
     fid = cur_fid
     included[path.name] = cur_fid
     controls = []
@@ -138,8 +140,6 @@ def _read_shader_rec(
             fid += 1
             inc_content, ctls = _read_shader_rec(path.parent / inc, included, ln, fid)
             controls += ctls
-            if ln:
-                content.append(f"#line 1 {fid}\n")
             content.append(inc_content)
             if ln:
                 content.append(f"#line {i+1} {cur_fid}\n")
