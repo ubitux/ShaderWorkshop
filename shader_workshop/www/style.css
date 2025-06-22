@@ -63,4 +63,4 @@ div#controls {
   margin-top: 10px;
 }
 
-#info::before { content: "t:"; }
+#infoLbl::before { content: "t:"; }

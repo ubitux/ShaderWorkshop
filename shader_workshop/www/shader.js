@@ -81,7 +81,7 @@ class CanvasShader {
 
       const t = (time - startTime) * 0.001;
       if (Math.abs(t - lastRefreshInfoTime) > 0.05) {
-        info.textContent = t.toFixed(2);
+        infoLbl.textContent = t.toFixed(2);
         lastRefreshInfoTime = t;
       }
 
