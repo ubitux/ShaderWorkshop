@@ -1,4 +1,5 @@
 uniform float radius; // def:0.7 min:0.1 max:0.9
+uniform bool rotate;  // def:1
 
 float circle(vec2 p, float r) {
     return length(p) - r;
@@ -12,6 +13,12 @@ float square(vec2 p, vec2 b) {
 void main() {
     // 1:1 ratio with [-1,1] along shortest axis (horizontal or vertical)
     vec2 p = (2.0*gl_FragCoord.xy - resolution) / min(resolution.x, resolution.y);
+
+    if (rotate) {
+        float a = time*0.5;
+        float c = cos(a), s = sin(a);
+        p = mat2(c,-s,s,c) * p;
+    }
 
     float sd0 = circle(p, radius);
     float sd1 = square(p, vec2(radius));
