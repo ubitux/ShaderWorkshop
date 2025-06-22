@@ -71,4 +71,5 @@ div#controls {
   column-gap: 1em;
   align-items: center; /* vertical align */
   max-width: 400px;
+  visibility: hidden;
 }

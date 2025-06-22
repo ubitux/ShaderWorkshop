@@ -251,7 +251,7 @@ function renderFragControls(controls) {
   const legend = document.createElement("legend");
   legend.textContent = "Live controls";
   fragControls.appendChild(legend);
-  fragControls.style.visibility = "";
+  fragControls.style.visibility = "visible";
 }
 
 async function loadFromHash() {
