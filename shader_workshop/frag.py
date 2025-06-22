@@ -117,7 +117,7 @@ def _read_shader_rec(
     included: dict[str, int],
     ln: bool = True,
     cur_fid: int = 0,
-) -> tuple[str, list[Control]]:
+) -> tuple[str, list[Control], int]:
     content = []
     if ln:
         content.append(f"#line 1 {cur_fid}\n")
@@ -137,13 +137,14 @@ def _read_shader_rec(
                 continue
             if inc in included:
                 continue
-            fid += 1
-            inc_content, ctls = _read_shader_rec(path.parent / inc, included, ln, fid)
+            inc_content, ctls, fid = _read_shader_rec(
+                path.parent / inc, included, ln, fid + 1
+            )
             controls += ctls
             content.append(inc_content)
             if ln:
                 content.append(f"#line {i+1} {cur_fid}\n")
-    return "".join(content), controls
+    return "".join(content), controls, fid
 
 
 def read_shader(
@@ -153,7 +154,7 @@ def read_shader(
 ) -> Fragment:
     included = dict()
     header = _FRAG_HEADER if add_header else ""
-    content, controls = _read_shader_rec(path, included, set_lines_directives)
+    content, controls, _ = _read_shader_rec(path, included, set_lines_directives)
     swapped = {v: k for k, v in included.items()}
     refs = [swapped[i] for i in range(len(swapped))]
     return Fragment(header + content, refs, controls)
