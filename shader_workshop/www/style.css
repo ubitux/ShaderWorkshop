@@ -32,7 +32,7 @@ canvas {
   margin: 0px auto 0px auto;
 }
 
-pre#error {
+pre#errorBlock {
   color: #ff0000;
   margin: 10px;
 }

@@ -16,20 +16,20 @@
     <canvas id="shader-canvas"></canvas>
     <div id="controls">
       <p>
-        <button id="screenshot" title="Screenshot">&#x1F4F7;</button>
-        <button id="reset" title="Reset">&#x23EE;</button>
-        <button id="playpause" title="Play/Pause">&#x23F5;</button>
+        <button id="screenshotBtn" title="Screenshot">&#x1F4F7;</button>
+        <button id="resetBtn" title="Reset">&#x23EE;</button>
+        <button id="playPause" title="Play/Pause">&#x23F5;</button>
         <label id="info"></label>
       </p>
       <p>
-        <select id="res">
+        <select id="resSelect">
           <option value="144">144p</option>
           <option value="240">240p</option>
           <option value="360" selected>360p</option>
           <option value="480">480p</option>
           <option value="720">720p</option>
         </select>
-        <select id="aspect">
+        <select id="aspectSelect">
           <option value="16:9">Landscape 16:9</option>
           <option value="16:10" selected>Landscape 16:10</option>
           <option value="4:3">Landscape 4:3</option>
@@ -38,7 +38,7 @@
         </select>
       </p>
     </div>
-    <pre id="error"></pre>
+    <pre id="errorBlock"></pre>
     <div id="refList"></div>
   </main>
 </body>

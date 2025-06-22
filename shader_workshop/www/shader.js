@@ -62,8 +62,6 @@ class CanvasShader {
     let lastRefreshInfoTime = -1.0;
     let pauseTime = 0.0;
 
-    const info = document.getElementById("info");
-
     const render = (time) => {
       if (action == Action.ResetTime || startTime === null) {
         action = null;
@@ -125,14 +123,6 @@ let paused; // state
 
 const socket = new WebSocket(`ws://${window.location.host}/ws`);
 const canvasShader = new CanvasShader("shader-canvas");
-const files = document.getElementById("files");
-const playPause = document.getElementById("playpause");
-const resetBtn = document.getElementById("reset");
-const screenshotBtn = document.getElementById("screenshot");
-const resSelect = document.getElementById("res");
-const aspectSelect = document.getElementById("aspect");
-const errorBlock = document.getElementById("error");
-const refList = document.getElementById("refList");
 
 var fragList = [];
 
