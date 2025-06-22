@@ -1,5 +1,6 @@
-const float zoom = 0.4;
-const int octaves = 5;
+uniform float zoom;   // def:0.4 min:0.1 max:2.0
+uniform int octaves;  // def:5 min:1 max:10
+
 const float LACUNARITY = 1.98;
 const float GAIN = 0.51;
 const float TAU = 6.283185307179586;
