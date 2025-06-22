@@ -1,8 +1,5 @@
 class CanvasShader {
-  constructor(canvasName) {
-    const canvas = document.getElementById(canvasName);
-
-    this.canvas = canvas;
+  constructor() {
     this.animationFrame = null;
     this.prog = null;
 
@@ -56,7 +53,6 @@ class CanvasShader {
 
     const resolutionLoc = gl.getUniformLocation(prog, "resolution");
     const timeLoc = gl.getUniformLocation(prog, "time");
-    const canvas = this.canvas;
 
     let startTime = null;
     let lastRefreshInfoTime = -1.0;
@@ -122,7 +118,7 @@ let action = null;
 let paused; // state
 
 const socket = new WebSocket(`ws://${window.location.host}/ws`);
-const canvasShader = new CanvasShader("shader-canvas");
+const canvasShader = new CanvasShader();
 
 var fragList = [];
 
@@ -152,8 +148,8 @@ function updateCanvasSize() {
   const h = parseInt(resSelect.value);
   const w = Math.round(h * a);
   console.log(`New resolution: ${w}x${h}`);
-  canvasShader.canvas.width = w;
-  canvasShader.canvas.height = h;
+  canvas.width = w;
+  canvas.height = h;
 }
 
 function renderFileList() {
