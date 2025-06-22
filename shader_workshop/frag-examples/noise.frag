@@ -1,6 +1,8 @@
 uniform float zoom;   // def:0.4 min:0.1 max:2.0
 uniform int octaves;  // def:5 min:1 max:10
 
+#include srgb
+
 const float LACUNARITY = 1.98;
 const float GAIN = 0.51;
 const float TAU = 6.283185307179586;
@@ -47,6 +49,8 @@ void main() {
     vec2 p = (2.0*gl_FragCoord.xy - resolution) / min(resolution.x, resolution.y);
 
     float n = fbm(p*freq + time*freq*0.1);
+    float v = n*0.5+0.5; // [-1,1] to [0,1]
+    vec3 col = vec3(v*v*v); // better lightness perception
 
-    out_color = vec4((vec3(n)+1.0)/2.0, 1.0);
+    out_color = vec4(l2s(col), 1.0);
 }
