@@ -10,8 +10,9 @@ float square(vec2 p, vec2 b) {
 }
 
 void main() {
-    vec2 uv = gl_FragCoord.xy / resolution;
-    vec2 p = (uv*2.0-1.0) * vec2(resolution.x / resolution.y, 1.0);
+    // 1:1 ratio with [-1,1] along shortest axis (horizontal or vertical)
+    vec2 p = (2.0*gl_FragCoord.xy - resolution) / min(resolution.x, resolution.y);
+
     float sd0 = circle(p, radius);
     float sd1 = square(p, vec2(radius));
     float t = (sin(time*2.0)+1.0)/2.0;

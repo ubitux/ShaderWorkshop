@@ -43,8 +43,9 @@ float fbm(vec2 p) {
 void main() {
     float freq = 1.0/zoom;
 
-    vec2 uv = gl_FragCoord.xy / resolution;
-    vec2 p = (uv*2.0 - 1.0) * vec2(resolution.x / resolution.y, 1.0);
+    // 1:1 ratio with [-1,1] along shortest axis (horizontal or vertical)
+    vec2 p = (2.0*gl_FragCoord.xy - resolution) / min(resolution.x, resolution.y);
+
     float n = fbm(p*freq + time*freq*0.1);
 
     out_color = vec4((vec3(n)+1.0)/2.0, 1.0);
