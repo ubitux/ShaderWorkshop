@@ -73,3 +73,7 @@ div#controls {
   max-width: 400px;
   visibility: hidden;
 }
+
+#fragControls input {
+  justify-self: left;
+}
