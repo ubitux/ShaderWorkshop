@@ -29,4 +29,4 @@ sw-frag = "shader_workshop.tool:main_frag"
 packages = ["shader_workshop"]
 
 [tool.setuptools.package-data]
-"shader_workshop" = ["www/*", "frag-examples/*.frag"]
+"shader_workshop" = ["www/*", "frag-examples/*.frag", "frag-examples/*.glsl"]
