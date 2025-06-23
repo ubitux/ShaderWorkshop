@@ -108,7 +108,8 @@ def extract_control(line: str) -> Control | None:
                 elif k == "def":
                     ctl.val = v
             elif isinstance(ctl, ControlBool):
-                ctl.val = bool(int(v))
+                if k == "def":
+                    ctl.val = bool(int(v))
     return ctl
 
 
