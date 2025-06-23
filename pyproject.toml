@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "shader-workshop"
-version = "0.4.0"
+version = "0.4.1"
 description = "A local shader development environment"
 readme = "README.md"
 authors = [{ name = "bµg", email = "u@pkh.me" }]
