@@ -67,8 +67,9 @@ div#controls {
 
 #fragControls {
   display: grid;
-  grid-template-columns: auto 1fr 50px; /* label, input, output */
+  grid-template-columns: auto 1fr 80px; /* label, input, output */
   column-gap: 1em;
+  row-gap: 0.5em;
   align-items: center; /* vertical align */
   max-width: 400px;
   visibility: hidden;

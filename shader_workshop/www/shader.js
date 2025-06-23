@@ -107,6 +107,10 @@ class CanvasShader {
         if      (control.type == "bool") gl.uniform1i(loc, w.checked ? 1 : 0);
         else if (control.type == "f32")  gl.uniform1f(loc, parseFloat(w.value));
         else if (control.type == "i32")  gl.uniform1i(loc, parseInt(w.value));
+        else if (control.type == "color") {
+          const color = parseColor(w.value);
+          gl.uniform3f(loc, color[0], color[1], color[2]);
+        }
       }
 
       gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -124,6 +128,15 @@ class CanvasShader {
 
     this.animationFrame = requestAnimationFrame(render);
   }
+}
+
+function parseColor(hex) {
+  if (hex.startsWith("#")) hex = hex.slice(1);
+  if (hex.length === 3)    hex = hex.split("").map(c => c + c).join("");
+  const r = parseInt(hex.substring(0, 2), 16) / 255;
+  const g = parseInt(hex.substring(2, 4), 16) / 255;
+  const b = parseInt(hex.substring(4, 6), 16) / 255;
+  return [r, g, b];
 }
 
 let Action = {
@@ -241,6 +254,11 @@ function renderFragControls(controls) {
     } else if (control.type == "bool") {
       w.type = "checkbox";
       w.checked = control.val;
+    } else if (control.type == "color") {
+      w.type = "color";
+      w.value = control.val;
+      w.oninput = function() { o.value = this.value; }
+      w.oninput();
     }
 
     fragControls.appendChild(label);

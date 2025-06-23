@@ -1,5 +1,9 @@
 uniform float radius; // def:0.7 min:0.1 max:0.9
 uniform bool rotate;  // def:1
+uniform vec3 color0;  // def:1,1,1
+uniform vec3 color1;  // def:1,0.5,0
+
+#include srgb
 
 float circle(vec2 p, float r) {
     return length(p) - r;
@@ -25,6 +29,6 @@ void main() {
     float t = (sin(time*2.0)+1.0)/2.0;
     float sd = mix(sd0, sd1, t);
     float aa = clamp(.5-sd/fwidth(sd),0.0,1.0);
-    vec3 col = mix(vec3(0.0), vec3(0.8), aa);
-    out_color = vec4(col, 1.0);
+    vec3 col = mix(s2l(color0), s2l(color1), t) * aa;
+    out_color = vec4(l2s(col), 1.0);
 }

@@ -56,9 +56,10 @@ For example:
 uniform float angle; // def:0.7 min:0.6 max:0.9
 uniform int steps;   // def:7 min:0 max:10
 uniform bool debug;  // def:1
+uniform vec3 color;  // def:1,0.5,0
 ```
 
-Currently, only `float`, `int` and `bool` are supported.
+Currently, `float`, `int`, `bool` and `vec3` (for colors only) are supported.
 
 ## Includes
 

@@ -20,7 +20,7 @@ _FRAG_HEADER = dedent(
 )
 
 
-type Control = ControlI32 | ControlF32 | ControlBool
+type Control = ControlI32 | ControlF32 | ControlBool | ControlColor
 
 
 @dataclass
@@ -58,6 +58,16 @@ class ControlBool:
 
 
 @dataclass
+class ControlColor:
+    name: str
+    val: str = "#000000"
+
+    @property
+    def typ(self) -> str:
+        return "color"
+
+
+@dataclass
 class Fragment:
     content: str
     refs: list[str]
@@ -78,18 +88,19 @@ _GL_TYPE_TO_CTL_CLS = dict(
     float=ControlF32,
     int=ControlI32,
     bool=ControlBool,
+    vec3=ControlColor,
 )
 
 
 def extract_control(line: str) -> Control | None:
-    r = r"\s*uniform\s+(?P<type>float|int|bool)\s+(?P<name>\w+)\s*;(\s*//\s*(?P<com>.*))?\s*$"
+    r = r"\s*uniform\s+(?P<type>float|int|bool|vec3)\s+(?P<name>\w+)\s*;(\s*//\s*(?P<com>.*))?\s*$"
     m = re.match(r, line)
     if not m:
         return None
     typ, name, com = m.group("type", "name", "com")
     ctl = _GL_TYPE_TO_CTL_CLS[typ](name)
     if com:
-        for m in re.finditer(r"(?P<key>\w+)\s*:\s*(?P<val>[\d\.]+)", com):
+        for m in re.finditer(r"(?P<key>\w+)\s*:\s*(?P<val>[\d\.,]+)", com):
             k, v = m.group("key", "val")
             if isinstance(ctl, ControlF32):
                 v = float(v)
@@ -110,6 +121,10 @@ def extract_control(line: str) -> Control | None:
             elif isinstance(ctl, ControlBool):
                 if k == "def":
                     ctl.val = bool(int(v))
+            elif isinstance(ctl, ControlColor):
+                if k == "def":
+                    r, g, b = [round(float(x) * 255) for x in v.split(",", maxsplit=3)]
+                    ctl.val = f"#{r:02x}{g:02x}{b:02x}"
     return ctl
 
 
