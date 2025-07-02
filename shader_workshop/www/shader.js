@@ -64,6 +64,7 @@ class CanvasShader {
 
     let startTime = null;
     let lastRefreshInfoTime = -1.0;
+    let lastTime = -1.0;
     let pauseTime = 0.0;
 
     const render = (time) => {
@@ -75,6 +76,7 @@ class CanvasShader {
       } else if (action == Action.Pause) {
         action = null;
         pauseTime = time;
+        fpsInfo.textContent = "";
       } else if (action == Action.Resume) {
         action = null;
         startTime += time - pauseTime;
@@ -90,8 +92,13 @@ class CanvasShader {
       const t = (time - startTime) * 0.001;
       if (Math.abs(t - lastRefreshInfoTime) > 0.05) {
         infoLbl.textContent = t.toFixed(2);
+
+        const dt = time - lastTime;
+        fpsInfo.textContent = dt < 0.0 ? "" : `FPS:${(1000.0/dt).toFixed(1)}`;
+
         lastRefreshInfoTime = t;
       }
+      lastTime = time;
 
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.clear(gl.COLOR_BUFFER_BIT);
