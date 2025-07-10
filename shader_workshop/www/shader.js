@@ -12,11 +12,16 @@ class CanvasShader {
     this.scale = 1.0;
     this.mouseX = canvas.width / 2.0;
     this.mouseY = canvas.height / 2.0;
+    this.mouseDown = false;
     // grab at document level to not miss events near the border of the canvas
     document.onmousemove = (e) => this.onMouseMove(e);
+    canvas.addEventListener("mousedown", () => this.mouseDown = true);
+    canvas.addEventListener("mouseup", () => this.mouseDown = false);
   }
 
   onMouseMove(e) {
+    if (!this.mouseDown)
+      return;
     const rect = canvas.getBoundingClientRect();
     this.mouseX = Math.min(Math.max(e.clientX - rect.left, 0), rect.width);
     this.mouseY = Math.min(Math.max(rect.height - (e.clientY - rect.top), 0), rect.height); // Flip Y
