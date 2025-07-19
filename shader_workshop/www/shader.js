@@ -1,3 +1,5 @@
+"use strict";
+
 class CanvasShader {
   constructor() {
     this.animationFrame = null;
