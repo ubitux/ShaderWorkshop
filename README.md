@@ -43,6 +43,7 @@ Every fragment gets the following uniforms as input:
 
 - `float time`: the time in seconds
 - `vec2 resolution`: the canvas resolution in pixels
+- `vec2 mouse`: the mouse last press down position in pixels
 
 They must write on the `vec4 out_color` output to produce a color.
 
