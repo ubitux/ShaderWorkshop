@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Low resolution control
+- Shorthand aliases for code golfing
 
 ### Changed
 - Mouse position is only updated when pressing down

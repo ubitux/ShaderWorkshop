@@ -49,6 +49,14 @@ They must write on the `vec4 out_color` output to produce a color.
 
 The compatibility is currently set to `300 es`.
 
+### Shorthand aliases
+
+- `P`: `gl_FragCoord.xy`
+- `O`: `out_color`
+- `T`: `time`
+- `R`: `resolution`
+- `M`: `mouse`
+
 ## Live controls
 
 To expose controls to the web UI, declare a uniform in your fragment shader.
