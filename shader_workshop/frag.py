@@ -107,7 +107,7 @@ def extract_control(line: str) -> Control | None:
     typ, name, com = m.group("type", "name", "com")
     ctl = _GL_TYPE_TO_CTL_CLS[typ](name)
     if com:
-        for m in re.finditer(r"(?P<key>\w+)\s*:\s*(?P<val>[\d\.,]+)", com):
+        for m in re.finditer(r"(?P<key>\w+)\s*:\s*(?P<val>[\d\.,-]+)", com):
             k, v = m.group("key", "val")
             if isinstance(ctl, ControlF32):
                 v = float(v)

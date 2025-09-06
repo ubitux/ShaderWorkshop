@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Mouse position is only updated when pressing down
 
+### Fixed
+- Negative numbers in live control properties
+
 ## [0.5.0] - 2025-07-03
 
 ### Added
