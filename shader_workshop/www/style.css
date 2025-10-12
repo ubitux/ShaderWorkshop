@@ -27,11 +27,6 @@ a { color: #ff8000; text-decoration: underline; }
 a:hover { background-color: #ff8000; color: white; }
 a.selected { font-weight: bold; color: white; text-decoration: none; }
 
-canvas {
-  display: block;
-  margin: 0px auto 0px auto;
-}
-
 pre#errorBlock {
   color: #ff0000;
   margin: 10px;
