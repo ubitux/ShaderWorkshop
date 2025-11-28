@@ -42,6 +42,7 @@ the web interface.
 Every fragment gets the following uniforms as input:
 
 - `float time`: the time in seconds
+- `float delta`: the time since last frame
 - `vec2 resolution`: the canvas resolution in pixels
 - `vec2 mouse`: the mouse last press down position in pixels
 
@@ -54,6 +55,7 @@ The compatibility is currently set to `300 es`.
 - `P`: `gl_FragCoord.xy`
 - `O`: `out_color`
 - `T`: `time`
+- `D`: `delta`
 - `R`: `resolution`
 - `M`: `mouse`
 

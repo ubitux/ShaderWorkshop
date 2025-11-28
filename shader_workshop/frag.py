@@ -15,12 +15,14 @@ _FRAG_HEADER = dedent(
     #endif
     out vec4 out_color;
     uniform float time;
+    uniform float delta;
     uniform vec2 resolution;
     uniform vec2 mouse;
 
     #define P gl_FragCoord.xy
     #define O out_color
     #define T time
+    #define D delta
     #define R resolution
     #define M mouse
     """

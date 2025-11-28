@@ -72,6 +72,7 @@ class CanvasShader {
 
     const resolutionLoc = gl.getUniformLocation(prog, "resolution");
     const timeLoc = gl.getUniformLocation(prog, "time");
+    const deltaLoc = gl.getUniformLocation(prog, "delta");
     const mouseLoc = gl.getUniformLocation(prog, "mouse");
 
     var control_info = {};
@@ -110,11 +111,11 @@ class CanvasShader {
       if (paused) time = pauseTime;
 
       const t = (time - startTime) * 0.001;
+      const dt = (time - lastTime) * 0.001;
       if (Math.abs(t - lastRefreshInfoTime) > 0.05) {
         infoLbl.textContent = t.toFixed(2);
 
-        const dt = time - lastTime;
-        fpsInfo.textContent = dt < 0.0 ? "" : `FPS:${(1000.0/dt).toFixed(1)}`;
+        fpsInfo.textContent = dt < 0.0 ? "" : `FPS:${(1.0/dt).toFixed(1)}`;
 
         lastRefreshInfoTime = t;
       }
@@ -125,6 +126,7 @@ class CanvasShader {
       gl.useProgram(prog);
       gl.uniform2f(resolutionLoc, canvas.width, canvas.height);
       gl.uniform1f(timeLoc, t);
+      gl.uniform1f(deltaLoc, dt);
       gl.uniform2f(mouseLoc, this.mouseX*this.scale, this.mouseY*this.scale);
 
       for (const control of controls) {
