@@ -12,6 +12,8 @@ body {
 
 nav {
   min-width: 200px;
+  height: 100vh;
+  box-sizing: border-box;
   background: #222;
   padding: 1rem;
   overflow-y: auto;
