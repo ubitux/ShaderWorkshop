@@ -112,7 +112,6 @@ async def _ws_handler(request):
     await ws.prepare(request)
 
     state = State.new()
-    await state.refresh(ws)
 
     fs_events_queue = asyncio.Queue()
 
@@ -140,6 +139,7 @@ async def _ws_handler(request):
     # Process both sources in parallel
     tasks = []
     try:
+        await state.refresh(ws)
         request.app["broadcaster"].subscribe(fs_events_queue)
         tasks = [
             asyncio.create_task(process_ws_events()),
@@ -148,7 +148,7 @@ async def _ws_handler(request):
         done, _ = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
         for task in done:
             task.result()
-    except asyncio.CancelledError:
+    except (asyncio.CancelledError, ConnectionResetError):
         pass
     finally:
         for task in tasks:
