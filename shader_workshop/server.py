@@ -127,7 +127,6 @@ async def _ws_handler(request):
 
     # Process incoming queue messages (watchdog filesystem events)
     async def process_fs_events():
-        request.app["broadcaster"].subscribe(fs_events_queue)
         while True:
             msg: DirModifiedEvent | FileModifiedEvent = await fs_events_queue.get()
             if msg.is_directory:
@@ -139,11 +138,22 @@ async def _ws_handler(request):
                 await state.send_reload(ws)
 
     # Process both sources in parallel
+    tasks = []
     try:
-        await asyncio.gather(process_ws_events(), process_fs_events())
+        request.app["broadcaster"].subscribe(fs_events_queue)
+        tasks = [
+            asyncio.create_task(process_ws_events()),
+            asyncio.create_task(process_fs_events()),
+        ]
+        done, _ = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+        for task in done:
+            task.result()
     except asyncio.CancelledError:
         pass
     finally:
+        for task in tasks:
+            task.cancel()
+        await asyncio.gather(*tasks, return_exceptions=True)
         request.app["broadcaster"].unsubscribe(fs_events_queue)
         await ws.close()
 
